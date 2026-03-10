@@ -1,0 +1,54 @@
+[gd_scene load_steps=11 format=3 uid="uid://b1g8t1hp1lmym"]
+
+[ext_resource type="PackedScene" uid="uid://c7gq1yvgtkek1" path="res://Scenes/Player/AimPointer/aimPointer.tscn" id="1_0u5uq"]
+[ext_resource type="Script" uid="uid://dfx404pqoorvk" path="res://Scenes/Player/player.gd" id="1_jlvik"]
+[ext_resource type="PackedScene" uid="uid://bt6h3frwkwpjs" path="res://Scripts/state_machine.tscn" id="1_uvnfx"]
+[ext_resource type="Texture2D" uid="uid://beawbmidrldqv" path="res://Scenes/Player/mosquita.png" id="1_xpcdj"]
+[ext_resource type="Script" uid="uid://djipaxlad38wo" path="res://Scenes/Player/States/idle_state.gd" id="3_xpcdj"]
+[ext_resource type="Script" uid="uid://bkgph3ds7rnfa" path="res://Scenes/Player/States/move_state.gd" id="4_mtuoh"]
+[ext_resource type="Script" uid="uid://g0dk1ad07nf6" path="res://Scenes/Player/States/jump_state.gd" id="5_htcer"]
+[ext_resource type="Script" uid="uid://kadcht62yxcc" path="res://Scenes/Player/States/shoot_state.gd" id="6_dd0ac"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_uvnfx"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_xpcdj")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_dd0ac"]
+radius = 20.0
+
+[node name="Player" type="CharacterBody2D" groups=["player"]]
+script = ExtResource("1_jlvik")
+
+[node name="AimPointer" parent="." instance=ExtResource("1_0u5uq")]
+visible = false
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.315, 0.315)
+sprite_frames = SubResource("SpriteFrames_uvnfx")
+animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1, 4)
+shape = SubResource("CircleShape2D_dd0ac")
+
+[node name="StateMachine" parent="." node_paths=PackedStringArray("default_state") instance=ExtResource("1_uvnfx")]
+default_state = NodePath("IdleState")
+
+[node name="IdleState" type="Node" parent="StateMachine"]
+script = ExtResource("3_xpcdj")
+
+[node name="MoveState" type="Node" parent="StateMachine"]
+script = ExtResource("4_mtuoh")
+
+[node name="JumpState" type="Node" parent="StateMachine"]
+script = ExtResource("5_htcer")
+
+[node name="ShootState" type="Node" parent="StateMachine"]
+script = ExtResource("6_dd0ac")

@@ -1,0 +1,36 @@
+[gd_scene load_steps=7 format=3 uid="uid://c7gq1yvgtkek1"]
+
+[ext_resource type="Texture2D" uid="uid://0wfk28t1p6dm" path="res://Scenes/Player/AimPointer/aimer2.png" id="1_vsn7s"]
+[ext_resource type="Texture2D" uid="uid://0x5lb8it8out" path="res://Scenes/Player/AimPointer/pointer.png" id="2_jchnn"]
+[ext_resource type="PackedScene" uid="uid://bt6h3frwkwpjs" path="res://Scripts/state_machine.tscn" id="3_jchnn"]
+[ext_resource type="Script" uid="uid://dgy22dx6abqlg" path="res://Scenes/Player/AimPointer/States/mouse_state.gd" id="4_p3tye"]
+[ext_resource type="Script" uid="uid://bo7ocrq43w65g" path="res://Scenes/Player/AimPointer/States/ControllerState.gd" id="5_l0yee"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_p3tye"]
+radius = 56.7539
+
+[node name="AimPointer" type="Area2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("1_vsn7s")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_p3tye")
+
+[node name="pointer" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="pointer"]
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("2_jchnn")
+
+[node name="StateMachine" parent="." node_paths=PackedStringArray("default_state") instance=ExtResource("3_jchnn")]
+default_state = NodePath("MouseState")
+
+[node name="MouseState" type="Node" parent="StateMachine"]
+script = ExtResource("4_p3tye")
+
+[node name="ControllerState" type="Node" parent="StateMachine"]
+script = ExtResource("5_l0yee")
+
+[node name="DisabledState" type="Node" parent="StateMachine"]

@@ -1,0 +1,57 @@
+[gd_scene load_steps=7 format=3 uid="uid://b8kjap01lvj1n"]
+
+[ext_resource type="Texture2D" uid="uid://do47bu5w4a42s" path="res://Scenes/Items/itemBox/box.png" id="1_hwke2"]
+[ext_resource type="Script" uid="uid://bos6mfi1xune0" path="res://Scripts/state_machine.gd" id="2_ymjbl"]
+[ext_resource type="Script" uid="uid://dhnwsc688yy6o" path="res://Scenes/Items/itemBox/States/available_state.gd" id="3_glxbw"]
+[ext_resource type="Script" uid="uid://buv0kd4nsnj05" path="res://Scenes/Items/itemBox/States/spawn_state.gd" id="4_uyu37"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_uyu37"]
+particle_flag_disable_z = true
+angle_min = -356.9
+angle_max = 264.6
+angular_velocity_min = 147.69
+angular_velocity_max = 147.69
+gravity = Vector3(0, 0, 0)
+linear_accel_min = -2.23517e-06
+linear_accel_max = 24.79
+radial_accel_min = 59.83
+radial_accel_max = 59.83
+scale_min = 10.0
+scale_max = 15.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hwke2"]
+size = Vector2(24, 23)
+
+[node name="Area2D" type="Area2D"]
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+emitting = false
+lifetime = 2.0
+speed_scale = 2.2
+explosiveness = 0.1
+process_material = SubResource("ParticleProcessMaterial_uyu37")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.03, 0.03)
+texture = ExtResource("1_hwke2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(2.38419e-07, -0.5)
+shape = SubResource("RectangleShape2D_hwke2")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("default_state")]
+script = ExtResource("2_ymjbl")
+default_state = NodePath("AvailableState")
+
+[node name="AvailableState" type="Node" parent="StateMachine"]
+script = ExtResource("3_glxbw")
+
+[node name="SpawnState" type="Node" parent="StateMachine"]
+script = ExtResource("4_uyu37")
+
+[connection signal="body_entered" from="." to="StateMachine/AvailableState" method="_on_area_2d_body_entered"]
+[connection signal="timeout" from="Timer" to="StateMachine/SpawnState" method="_on_timer_timeout"]
